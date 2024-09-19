@@ -27,5 +27,8 @@ Fnt设定的XY offset是游戏使用的字体显示偏移, 推荐默认.
 ![TexConvGui](Screenshots/TexConvGui.png) 
 6. 注意备份!! 此时我们把**ED9FontCreator**输出目录中的**font_\*.fnt**覆盖到**game\\asset\common\font**目录,  
 把**TexconvGui**转换好的**font_\*.dds**文件覆盖到**ame\asset\dx11\image**目录, 启动游戏查看是否成功.
-
-
+### 游戏效果(思源黑体)
+![1](Screenshots/1.png) 
+![2](Screenshots/2.png) 
+### 参考
+[黎之轨迹工具包（更新中：2022/8/24）](https://bbs.3dmgame.com/forum.php?mod=viewthread&tid=6321673&page=1&extra=#pid301960392)
