@@ -24,7 +24,7 @@ Fnt设定的XY offset是游戏使用的字体显示偏移, 推荐默认.
 导出png到新建文件夹中.
 ![ps](Screenshots/ps.png) 
 5. 打开**TexconvGui**, Source选择刚才PS导出的新建文件夹, Destination选择导出目录, Output Format选择**BC7_UNORM**, 点击Convert, 等待其转换结束.
-![main](Screenshots/TexconvGui.png) 
+![TexConvGui](Screenshots/TexConvGui.png) 
 6. 注意备份!! 此时我们把**ED9FontCreator**输出目录中的**font_\*.fnt**覆盖到**game\\asset\common\font**目录,  
 把**TexconvGui**转换好的**font_\*.dds**文件覆盖到**ame\asset\dx11\image**目录, 启动游戏查看是否成功.
 
