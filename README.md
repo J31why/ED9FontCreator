@@ -1,6 +1,6 @@
 # 介绍
 自定义黎之轨迹Nisa版的字体文件(纹理和fnt文件), 不过不能直接使用纹理文件, 需要PS和dds转换后才能使用.
-![Image text](Screenshots/main.png) 
+![main](Screenshots/main.png) 
 # 前置
  .net8、PS和[TexconvGui](https://github.com/bj-rn/texconvgui)
 # 使用
@@ -22,7 +22,10 @@ Fnt设定的XY offset是游戏使用的字体显示偏移, 推荐默认.
 4. 打开输出目录, 应该有3个文件在里面, **font_\*.fnt、g.png和r.png**,
 打开**PS**, 把两张相同像素大小的png图片重叠在一起, 左上角对齐, 把叠在上方的图层混合模式设置为滤色.
 导出png到新建文件夹中.
+![ps](Screenshots/ps.png) 
 5. 打开**TexconvGui**, Source选择刚才PS导出的新建文件夹, Destination选择导出目录, Output Format选择**BC7_UNORM**, 点击Convert, 等待其转换结束.
+![main](Screenshots/TexconvGui.png) 
 6. 注意备份!! 此时我们把**ED9FontCreator**输出目录中的**font_\*.fnt**覆盖到**game\\asset\common\font**目录,  
 把**TexconvGui**转换好的**font_\*.dds**文件覆盖到**ame\asset\dx11\image**目录, 启动游戏查看是否成功.
+
 
