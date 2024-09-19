@@ -18,11 +18,10 @@ namespace ED9FontCreator.Views
         {
             if (Design.IsDesignMode) return;
             base.OnLoaded(e);
-            var vm = (this.DataContext as MainWindowViewModel)!;
-            vm.CharBorder = this.charBorder;
-            vm.PreviewBorder = this.previewBorder;
-
+            var vm = DataContext as MainWindowViewModel;
+            vm!.DrawCanvas = drawCanvas;
         }
+
         private void FntFileDrop(object? sender, DragEventArgs e)
         {
             var file = e.Data.GetFiles()?.FirstOrDefault();

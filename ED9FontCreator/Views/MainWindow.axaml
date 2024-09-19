@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:ED9FontCreator.Views"
     xmlns:vm="using:ED9FontCreator.ViewModels"
     Title="ED9FontCreator"
     d:DesignHeight="680"
@@ -81,8 +82,11 @@
                             FontSize="18"
                             FontWeight="Bold"
                             Text="DDS设定" />
-                        <TextBox Text="{Binding FontName}" Watermark="字体名称" />
-                        <NumericUpDown Watermark="字体大小" Value="{Binding FontSize}" />
+                        <TextBox Text="{Binding FontSettings.FontName}" Watermark="字体名称" />
+                        <NumericUpDown
+                            FormatString="0"
+                            Watermark="字体大小"
+                            Value="{Binding FontSettings.FontSize}" />
                         <DockPanel>
                             <TextBlock
                                 Margin="5"
@@ -92,7 +96,7 @@
                             <ComboBox
                                 HorizontalAlignment="Stretch"
                                 ItemsSource="{Binding FontWeights}"
-                                SelectedValue="{Binding FontWeight, Mode=TwoWay}" />
+                                SelectedValue="{Binding FontSettings.FontWeight, Mode=TwoWay}" />
                         </DockPanel>
                         <DockPanel>
                             <TextBlock
@@ -103,25 +107,31 @@
                             <ComboBox
                                 HorizontalAlignment="Stretch"
                                 ItemsSource="{Binding FontStyles}"
-                                SelectedValue="{Binding FontStyle}" />
+                                SelectedValue="{Binding FontSettings.FontStyle}" />
                         </DockPanel>
                         <TextBlock
                             Margin="5"
                             FontWeight="Bold"
-                            Text="字体裁剪" />
+                            Text="字体边距" />
                         <DockPanel HorizontalAlignment="Center" LastChildFill="False">
                             <TextBlock
                                 Margin="5"
                                 VerticalAlignment="Center"
                                 Foreground="#707070"
                                 Text="左:" />
-                            <NumericUpDown ShowButtonSpinner="False" Value="{Binding FontClipL}" />
+                            <NumericUpDown
+                                FormatString="0"
+                                ShowButtonSpinner="False"
+                                Value="{Binding FontSettings.FontMarginL, FallbackValue=0, TargetNullValue=0}" />
                             <TextBlock
                                 Margin="5"
                                 VerticalAlignment="Center"
                                 Foreground="#707070"
                                 Text="上:" />
-                            <NumericUpDown ShowButtonSpinner="False" Value="{Binding FontClipT}" />
+                            <NumericUpDown
+                                FormatString="0"
+                                ShowButtonSpinner="False"
+                                Value="{Binding FontSettings.FontMarginT}" />
                         </DockPanel>
                         <DockPanel HorizontalAlignment="Center" LastChildFill="False">
                             <TextBlock
@@ -129,13 +139,19 @@
                                 VerticalAlignment="Center"
                                 Foreground="#707070"
                                 Text="右:" />
-                            <NumericUpDown ShowButtonSpinner="False" Value="{Binding FontClipR}" />
+                            <NumericUpDown
+                                FormatString="0"
+                                ShowButtonSpinner="False"
+                                Value="{Binding FontSettings.FontMarginR}" />
                             <TextBlock
                                 Margin="5"
                                 VerticalAlignment="Center"
                                 Foreground="#707070"
                                 Text="下:" />
-                            <NumericUpDown ShowButtonSpinner="False" Value="{Binding FontClipB}" />
+                            <NumericUpDown
+                                FormatString="0"
+                                ShowButtonSpinner="False"
+                                Value="{Binding FontSettings.FontMarginB}" />
                         </DockPanel>
                         <TextBlock
                             FontSize="18"
@@ -147,7 +163,10 @@
                                 VerticalAlignment="Center"
                                 Foreground="#707070"
                                 Text="X Offset:" />
-                            <NumericUpDown ShowButtonSpinner="False" Value="{Binding FntXOffset}" />
+                            <NumericUpDown
+                                FormatString="0"
+                                ShowButtonSpinner="False"
+                                Value="{Binding FntSettings.FntXOffset}" />
                         </DockPanel>
                         <DockPanel>
                             <TextBlock
@@ -155,7 +174,10 @@
                                 VerticalAlignment="Center"
                                 Foreground="#707070"
                                 Text="Y Offset:" />
-                            <NumericUpDown ShowButtonSpinner="False" Value="{Binding FntYOffset}" />
+                            <NumericUpDown
+                                FormatString="0"
+                                ShowButtonSpinner="False"
+                                Value="{Binding FntSettings.FntYOffset}" />
                         </DockPanel>
                         <DockPanel>
                             <TextBlock
@@ -163,7 +185,10 @@
                                 VerticalAlignment="Center"
                                 Foreground="#707070"
                                 Text="间距补充:" />
-                            <NumericUpDown ShowButtonSpinner="False" Value="{Binding FntNextCharExOffset}" />
+                            <NumericUpDown
+                                FormatString="0"
+                                ShowButtonSpinner="False"
+                                Value="{Binding FntSettings.FntNextCharExOffset}" />
                         </DockPanel>
                         <Button
                             HorizontalAlignment="Stretch"
@@ -175,6 +200,10 @@
                             FontWeight="Bold"
                             Text="预览" />
                         <TextBlock Foreground="#707070" Text="仅供参考，以实际游戏为准" />
+                        <CheckBox
+                            Name="isShowCharBackgroundBox"
+                            Content="显示字符背景"
+                            IsChecked="True" />
                         <TextBox
                             Name="previewTextBox"
                             Text="预览: 129文gp_!\直"
@@ -188,11 +217,20 @@
                             </TextBox.InnerRightContent>
                         </TextBox>
                         <Border
-                            Name="previewBorder"
-                            MinHeight="60"
                             Margin="0,0,0,10"
-                            Background="Black"
-                            ClipToBounds="True" />
+                            BorderBrush="Green"
+                            BorderThickness="1"
+                            ClipToBounds="True">
+                            <views:CharCanvas
+                                MinHeight="60"
+                                CharBackground="Magenta"
+                                Chars="{Binding PreviewChars}"
+                                Fnt="{Binding FntSettings}"
+                                Font="{Binding FontSettings}"
+                                IsPreview="True"
+                                IsShowCharBackground="{Binding #isShowCharBackgroundBox.IsChecked}"
+                                IsSimplify="{Binding IsSimplifiedChinese}" />
+                        </Border>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -220,11 +258,12 @@
 
             </TabItem>
         </TabControl>
-        <DockPanel Grid.Column="1" IsEnabled="{Binding Analysed}">
+        <DockPanel Grid.Column="1">
             <Grid
                 HorizontalAlignment="Left"
                 ColumnDefinitions="Auto,Auto,Auto,Auto"
                 DockPanel.Dock="Top"
+                IsEnabled="{Binding Analysed}"
                 RowDefinitions="Auto,Auto">
                 <Button
                     Grid.Row="1"
@@ -240,13 +279,15 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     Margin="5,4,5,0"
-                    Command="{Binding GenerateRedCharsCommand}"
+                    Command="{Binding GenerateCharsCommand}"
+                    CommandParameter="{x:True}"
                     Content="生成红色字符" />
                 <Button
                     Grid.Row="0"
                     Grid.Column="1"
                     Margin="5,4,5,0"
-                    Command="{Binding GenerateGreenCharsCommand}"
+                    Command="{Binding GenerateCharsCommand}"
+                    CommandParameter="{x:False}"
                     Content="生成绿色字符" />
                 <TextBlock
                     Grid.Row="0"
@@ -276,12 +317,15 @@
                     Text="注意生成的字符不要超过底部边界. &#10;缓存的字符数必须和解析的FNT字符数一致才可导出." />
             </Grid>
             <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
-                <Border
-                    Name="charBorder"
+                <views:CharCanvas
+                    Name="drawCanvas"
                     Width="4096"
                     Height="4096"
-                    Background="Black"
-                    ClipToBounds="True" />
+                    Chars="{Binding DrawChars}"
+                    Fnt="{Binding FntSettings}"
+                    Font="{Binding FontSettings}"
+                    Foreground="{Binding DrawCharForeground}"
+                    IsSimplify="{Binding IsSimplifiedChinese}" />
             </ScrollViewer>
         </DockPanel>
 

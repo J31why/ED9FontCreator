@@ -1,5 +1,8 @@
-﻿using ED9FontCreator.ViewModels;
+﻿using Chinese;
+using ED9FontCreator.Models;
+using ED9FontCreator.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -9,7 +12,8 @@ namespace ED9FontCreator
 {
     internal static class FntHelper
     {
-        static bool ContainsSequence(byte[] array, byte[] sequence)
+        public static readonly List<ReplaceItem> ReplaceGroup = [];
+        public static bool ContainsSequence(byte[] array, byte[] sequence)
         {
             for (int i = 0; i <= array.Length - sequence.Length; i++)
             {
@@ -52,7 +56,6 @@ namespace ED9FontCreator
                 return false;
             }
         }
-
         private static FntChar GetFntChar(FileStream fs)
         {
             return new FntChar
@@ -70,11 +73,11 @@ namespace ED9FontCreator
                 NextCharOffset = (short)fs.ReadShort()
             };
         }
-        public static int GetCode(string @char)
+        public static int GetCode(string unicode)
         {
             try
             {
-                var bytes = Encoding.Unicode.GetBytes(@char);
+                var bytes = Encoding.Unicode.GetBytes(unicode);
                 var code = (int)bytes[0];
                 for (var i = 1; i < 4 && i < bytes.Length; i++)
                     code += bytes[i] << (i * 8);
@@ -84,6 +87,14 @@ namespace ED9FontCreator
             {
                 return -1;
             }
+        }
+        public static string GetString(int code,bool simplify ,bool replace=true)
+        {
+            var text = Encoding.Unicode.GetString(BitConverter.GetBytes(code)).TrimEnd('\0');
+            var match = ReplaceGroup.FirstOrDefault(x => x.Old == text);
+            if (match != null) text = match.New;
+            if (simplify) text = ChineseConverter.ToSimplified(text);
+            return text ?? "";
         }
     }
 }
