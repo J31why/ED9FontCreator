@@ -13,11 +13,5 @@ namespace ED9FontCreator.ViewModels
         [ObservableProperty] private short _fntXOffset = 0;
         [ObservableProperty] private short _fntYOffset = 0xC;
         [ObservableProperty] private short _fntNextCharExOffset = 2;
-        public void Restore()
-        {
-            FntXOffset = 0;
-            FntYOffset = 12; 
-            FntNextCharExOffset = 2;
-        }
     }
 }

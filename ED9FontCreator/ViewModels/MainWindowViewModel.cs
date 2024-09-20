@@ -1,8 +1,5 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Chinese;
 using CommunityToolkit.Mvvm.Input;
 using ED9FontCreator.Models;
 using System;
@@ -10,9 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ED9FontCreator.ViewModels
 {
@@ -21,7 +16,7 @@ namespace ED9FontCreator.ViewModels
         public MainWindowViewModel()
         {
 #if DEBUG
-            _fntPath = @"E:\Games\ED9A\asset\common\font\font_0.fnt.bak";
+            _fntPath = @"E:\Games\ED9A\asset\common\font\font_0.fnt";
             _fontSettings.FontName = "Source Han Serif CN";
 #endif
             OutDir = Path.Combine(Environment.CurrentDirectory, "out");
@@ -55,9 +50,10 @@ namespace ED9FontCreator.ViewModels
             var temp = new List<FntChar>();
             foreach (var c in charArr)
             {
-                temp.Add(new FntChar()
+                temp.Add(new FntChar
                 {
                     Code = FntHelper.GetCode(c.ToString()),
+                    Type = 1,
                     XOffset = FntSettings.FntXOffset,
                     YOffset = FntSettings.FntYOffset
                 });
@@ -101,6 +97,7 @@ namespace ED9FontCreator.ViewModels
             }
             IsRedChars = isRed;
             var chars = Fnt!.Chars.Where(x => x.ColorChannel == (isRed ? 0x200 : 0x100)).ToList();
+            chars = chars.OrderBy(x => x.Y).ThenBy(x => x.X).ToList();
             var temp = new List<FntChar>();
             foreach (var c in chars)
             {
@@ -109,7 +106,7 @@ namespace ED9FontCreator.ViewModels
                     Code = c.Code,
                     ColorChannel = c.ColorChannel,
                     Offset = c.Offset,
-                    Type = 0,
+                    Type = 1,
                     XOffset = FntSettings.FntXOffset,
                     YOffset = FntSettings.FntYOffset
                 });
@@ -132,7 +129,7 @@ namespace ED9FontCreator.ViewModels
         {
             var temp = TempFntData.ToList();
             temp.Sort((x, y) => x.Code.CompareTo(y.Code));
-            var file = System.IO.Path.Combine(OutDir, System.IO.Path.GetFileName(FntPath));
+            var file = Path.Combine(OutDir, Path.GetFileName(FntPath));
             if (File.Exists(file))
                 File.Delete(file);
             using FileStream fs = new(file, FileMode.Create);

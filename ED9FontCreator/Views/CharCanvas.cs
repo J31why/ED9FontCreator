@@ -125,50 +125,51 @@ namespace ED9FontCreator.Views
                 return;
             }
             var typeface = new Typeface(new FontFamily(Font.FontName+ ",Segoe UI Symbol"), Enum.Parse<FontStyle>(Font.FontStyle), Enum.Parse<FontWeight>(Font.FontWeight));
-            short x = 0, y = Font.FontMarginT, highest = 0;
+            short x = 0, y = 0, highest = 0;
 
             if (IsPreview)
                 y += Fnt.FntYOffset;
 
             foreach (var fntChar in Chars)
             {
+                var @char = FntHelper.GetString(fntChar.Code, IsSimplify);
                 var text = new FormattedText(
-                    FntHelper.GetString(fntChar.Code, IsSimplify),
+                    @char,
                     CultureInfo.CurrentCulture,
                     FlowDirection,
                     typeface,
                     Font.FontSize,
                     Foreground);
                 _formattedTexts.Add(text);
-                fntChar.Width = (short)Math.Ceiling(text.Width);
-                fntChar.Height = (short)Math.Ceiling(text.Height);
+
+                fntChar.Width = (short)Math.Ceiling(text.Width + Font.FontMarginL + Font.FontMarginR);
+                fntChar.Height = (short)Math.Ceiling(text.Height + Font.FontMarginT + Font.FontMarginB);
                 fntChar.NextCharOffset = (short)(fntChar.Width + Fnt.FntNextCharExOffset);
 
-                if (x + fntChar.Width + Font.FontMarginL + (IsPreview ? Fnt.FntXOffset : 0) > _size.Width) //换行
+                if (x + fntChar.Width + (IsPreview ? Fnt.FntXOffset : 0) > Bounds.Width)
                 {
                     x = 0;
-                    y += (short)(highest + Font.FontMarginT + Font.FontMarginB);
+                    y += highest;
                     highest = 0;
-
                     if (IsPreview)
                         y += Fnt.FntYOffset;
                 }
 
-                x += Font.FontMarginL;
-
-                if (IsPreview)
-                    x += Fnt.FntXOffset;
-
                 if (highest < fntChar.Height)
                     highest = fntChar.Height;
+
+                if (IsPreview)
+                {
+                    x += Fnt.FntXOffset;
+                }
 
                 fntChar.X = x;
                 fntChar.Y = y;
 
-                x += (short)(fntChar.Width + Font.FontMarginR);
+                x += fntChar.Width;
             }
-            y += (short)(highest + Font.FontMarginB);
-            _charsHeight = y;
+
+            _charsHeight = y + highest;
             InvalidateMeasure();
         }
 
@@ -208,8 +209,10 @@ namespace ED9FontCreator.Views
                 var fntChar = Chars[i];
 
                 //context.DrawRectangle(Brushes.Bisque ,null, new(x, y, text.Width, text.Height));
-
-                context.DrawText(text, new Point(fntChar.X, fntChar.Y));
+                var x = fntChar.X + Font.FontMarginL;
+                var y = fntChar.Y + Font.FontMarginT;
+          
+                context.DrawText(text, new Point(x,y));
             }
         }
     }

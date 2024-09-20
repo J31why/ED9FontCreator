@@ -6,7 +6,7 @@ namespace ED9FontCreator.ViewModels
     {
         [ObservableProperty] private long _offset;
         [ObservableProperty] private int _code;
-        [ObservableProperty] private int _type;
+        [ObservableProperty] private int _type;//0:文字间隔宽松; 1: 紧凑
         [ObservableProperty] private short _x;
         [ObservableProperty] private short _y;
         [ObservableProperty] private short _width;

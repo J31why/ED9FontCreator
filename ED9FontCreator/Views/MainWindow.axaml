@@ -206,7 +206,7 @@
                             IsChecked="True" />
                         <TextBox
                             Name="previewTextBox"
-                            Text="预览: 129文gp_!\直"
+                            Text="预览: ijfp"
                             Watermark="预览文本">
                             <TextBox.InnerRightContent>
                                 <Button
