@@ -97,7 +97,7 @@ namespace ED9FontCreator.ViewModels
             }
             IsRedChars = isRed;
             var chars = Fnt!.Chars.Where(x => x.ColorChannel == (isRed ? 0x200 : 0x100)).ToList();
-            chars = chars.OrderBy(x => x.Y).ThenBy(x => x.X).ToList();
+            chars = chars.OrderBy(x => x.Y).ThenBy(x => x.X).ToList(); //匹配原版排序
             var temp = new List<FntChar>();
             foreach (var c in chars)
             {

@@ -39,13 +39,11 @@ namespace ED9FontCreator.Views
         public static readonly StyledProperty<bool> IsShowCharBackgroundProperty =
             AvaloniaProperty.Register<CharCanvas, bool>(nameof(IsShowCharBackground));
 
-
         public bool IsShowCharBackground
         {
             get => this.GetValue(IsShowCharBackgroundProperty);
             set => SetValue(IsShowCharBackgroundProperty, value);
         }
-
 
         public bool IsPreview
         {
@@ -142,13 +140,13 @@ namespace ED9FontCreator.Views
                     Foreground);
                 _formattedTexts.Add(text);
 
-                fntChar.Width = (short)Math.Ceiling(text.WidthIncludingTrailingWhitespace + Font.FontMarginL + Font.FontMarginR);
+                fntChar.Width = (short)Math.Ceiling(text.WidthIncludingTrailingWhitespace + text.OverhangLeading + 
+                                                    text.OverhangTrailing + Font.FontMarginL + Font.FontMarginR);
                 fntChar.Height = (short)Math.Ceiling(text.Height + Font.FontMarginT + Font.FontMarginB);
                 fntChar.NextCharOffset = (short)(fntChar.Width + Fnt.FntNextCharExOffset);
 
-                var trailing = (short)Math.Ceiling(text.OverhangTrailing);
                 var expectedLineWidth =
-                    x + fntChar.Width + trailing * 2 + (IsPreview ? Fnt.FntXOffset : 0);
+                    x + fntChar.Width + (IsPreview ? Fnt.FntXOffset : 0);
 
                 if (expectedLineWidth > Bounds.Width)
                 {
@@ -167,11 +165,10 @@ namespace ED9FontCreator.Views
                     x += Fnt.FntXOffset;
                 }
 
-                x += trailing;
                 fntChar.X = x;
                 fntChar.Y = y;
 
-                x += (short)(fntChar.Width + trailing);
+                x += fntChar.Width;
             }
 
             _charsHeight = y + highest;
@@ -214,7 +211,7 @@ namespace ED9FontCreator.Views
                 var fntChar = Chars[i];
 
                 //context.DrawRectangle(Brushes.Bisque ,null, new(x, y, text.Width, text.Height));
-                var x = fntChar.X + Font.FontMarginL;
+                var x = fntChar.X + Font.FontMarginL + text.OverhangLeading;
                 var y = fntChar.Y + Font.FontMarginT;
 
                 context.DrawText(text, new Point(x, y));
