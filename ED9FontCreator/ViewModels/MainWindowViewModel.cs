@@ -101,12 +101,13 @@ namespace ED9FontCreator.ViewModels
             var temp = new List<FntChar>();
             foreach (var c in chars)
             {
+                var @char = (char)c.Code;
                 temp.Add(new()
                 {
                     Code = c.Code,
                     ColorChannel = c.ColorChannel,
                     Offset = c.Offset,
-                    Type = 1,
+                    Type = @char is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' ? 1 : 0,
                     XOffset = FntSettings.FntXOffset,
                     YOffset = FntSettings.FntYOffset
                 });

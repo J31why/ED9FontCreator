@@ -96,7 +96,7 @@ namespace ED9FontCreator
 
         public static string GetString(int code, bool simplify, bool replace = true)
         {
-            var text = Encoding.Unicode.GetString(BitConverter.GetBytes(code)).TrimEnd('\0');
+            var text = ((char)code).ToString();
             var match = ReplaceGroup.FirstOrDefault(x => x.Old == text);
             if (match != null) text = match.New;
             if (simplify) text = ChineseConverter.ToSimplified(text);
