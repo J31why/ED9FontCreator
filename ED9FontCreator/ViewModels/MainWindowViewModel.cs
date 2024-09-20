@@ -76,9 +76,12 @@ namespace ED9FontCreator.ViewModels
         private void ExportCharPng()
         {
             if (DrawChars?.Count == 0) return;
-            var size = new PixelSize((int)DrawCanvas.Bounds.Width, (int)DrawCanvas.Bounds.Height);
+            var pSize = new PixelSize((int)DrawCanvas.Bounds.Width, (int)DrawCanvas.Bounds.Height);
+            var size = new Size(pSize.Width, pSize.Height);
+            using RenderTargetBitmap bitmap = new(pSize, new Vector(96, 96));
+            DrawCanvas.Measure(size);
+            DrawCanvas.Arrange(new Rect(size));
             DrawCanvas.UpdateLayout();
-            using RenderTargetBitmap bitmap = new(size, new Vector(96, 96));
             bitmap.Render(DrawCanvas);
             var file = Path.Combine(OutDir, IsRedChars ? "r.png" : "g.png");
             bitmap.Save(file);
