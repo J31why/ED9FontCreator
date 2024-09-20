@@ -142,11 +142,15 @@ namespace ED9FontCreator.Views
                     Foreground);
                 _formattedTexts.Add(text);
 
-                fntChar.Width = (short)Math.Ceiling(text.Width + Font.FontMarginL + Font.FontMarginR);
+                fntChar.Width = (short)Math.Ceiling(text.WidthIncludingTrailingWhitespace + Font.FontMarginL + Font.FontMarginR);
                 fntChar.Height = (short)Math.Ceiling(text.Height + Font.FontMarginT + Font.FontMarginB);
                 fntChar.NextCharOffset = (short)(fntChar.Width + Fnt.FntNextCharExOffset);
 
-                if (x + fntChar.Width + (IsPreview ? Fnt.FntXOffset : 0) > Bounds.Width)
+                var trailing = (short)Math.Ceiling(text.OverhangTrailing);
+                var expectedLineWidth =
+                    x + fntChar.Width + trailing * 2 + (IsPreview ? Fnt.FntXOffset : 0);
+
+                if (expectedLineWidth > Bounds.Width)
                 {
                     x = 0;
                     y += highest;
@@ -163,10 +167,11 @@ namespace ED9FontCreator.Views
                     x += Fnt.FntXOffset;
                 }
 
+                x += trailing;
                 fntChar.X = x;
                 fntChar.Y = y;
 
-                x += fntChar.Width;
+                x += (short)(fntChar.Width + trailing);
             }
 
             _charsHeight = y + highest;

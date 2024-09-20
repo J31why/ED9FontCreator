@@ -255,8 +255,7 @@
             <TabItem
                 Padding="5"
                 FontSize="20"
-                Header="关于"
-                IsSelected="True">
+                Header="关于">
                 <StackPanel Spacing="5">
                     <TextBlock>
                         <Run
