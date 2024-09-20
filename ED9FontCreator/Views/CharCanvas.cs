@@ -174,7 +174,7 @@ namespace ED9FontCreator.Views
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (_charsHeight > 0)
+            if (_charsHeight > 0 && double.IsInfinity(availableSize.Height))
             {
                 _size = new Size(availableSize.Width, _charsHeight);
                 return _size;
@@ -191,7 +191,7 @@ namespace ED9FontCreator.Views
         public override void Render(DrawingContext context)
         {
             if (Background != null)
-                context.DrawRectangle(Background, null, new Rect(_size));
+                context.DrawRectangle(Background, null, new Rect(Bounds.Size));
             if (Chars == null) return;
 
             if (IsShowCharBackground)

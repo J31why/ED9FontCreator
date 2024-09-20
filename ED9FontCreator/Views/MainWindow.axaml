@@ -216,11 +216,7 @@
                                     Content="预览" />
                             </TextBox.InnerRightContent>
                         </TextBox>
-                        <Border
-                            Margin="0,0,0,10"
-                            BorderBrush="Green"
-                            BorderThickness="1"
-                            ClipToBounds="True">
+                        <Border Margin="0,0,0,10" ClipToBounds="True">
                             <views:CharCanvas
                                 MinHeight="60"
                                 CharBackground="Magenta"
