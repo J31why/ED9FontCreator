@@ -107,7 +107,8 @@ namespace ED9FontCreator.ViewModels
                     Code = c.Code,
                     ColorChannel = c.ColorChannel,
                     Offset = c.Offset,
-                    Type = @char is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' ? 1 : 0,
+                    Type = @char is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or
+                        >= '0' and <= '9' or ' ' or '(' or ')' or '.' ? 1 : 0,
                     XOffset = FntSettings.FntXOffset,
                     YOffset = FntSettings.FntYOffset
                 });
