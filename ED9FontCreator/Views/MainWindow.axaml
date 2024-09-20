@@ -13,7 +13,7 @@
     FontFamily="Microsoft YaHei"
     Icon="/Assets/ed9.ico"
     mc:Ignorable="d">
-    <Grid ColumnDefinitions="280,*">
+    <Grid ColumnDefinitions="330,*">
         <TabControl>
             <TabItem
                 Padding="5"
@@ -251,7 +251,26 @@
                         Text="{Binding ReplaceText, Mode=TwoWay}"
                         TextWrapping="Wrap" />
                 </DockPanel>
-
+            </TabItem>
+            <TabItem
+                Padding="5"
+                FontSize="20"
+                Header="关于"
+                IsSelected="True">
+                <StackPanel Spacing="5">
+                    <TextBlock>
+                        <Run
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Text="ED9 Font Creator" />
+                        <Run
+                            FontSize="12"
+                            Foreground="#606060"
+                            Text="0.0.2" />
+                    </TextBlock>
+                    <TextBlock Text="作者: Jelly" />
+                    <HyperlinkButton Content="Github" NavigateUri="https://github.com/J31why/ED9FontCreator" />
+                </StackPanel>
             </TabItem>
         </TabControl>
         <DockPanel Grid.Column="1">
@@ -312,7 +331,10 @@
                     Foreground="IndianRed"
                     Text="注意生成的字符不要超过底部边界. &#10;缓存的字符数必须和解析的FNT字符数一致才可导出." />
             </Grid>
-            <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+            <ScrollViewer
+                Margin="5,0,0,0"
+                HorizontalScrollBarVisibility="Visible"
+                VerticalScrollBarVisibility="Visible">
                 <views:CharCanvas
                     Name="drawCanvas"
                     Width="4096"

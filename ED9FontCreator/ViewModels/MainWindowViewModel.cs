@@ -31,6 +31,8 @@ namespace ED9FontCreator.ViewModels
         {
             FntHelper.GetFnt(FntPath, out var fnt);
             this.Fnt = fnt;
+            TempFntData.Clear();
+            DrawChars = null;
         }
 
         [RelayCommand]

@@ -2,6 +2,8 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using ED9FontCreator.ViewModels;
+using System.Diagnostics;
+using System;
 using System.Linq;
 
 namespace ED9FontCreator.Views
@@ -28,5 +30,6 @@ namespace ED9FontCreator.Views
             if (file != null)
                 fntTextBox.SetValue(TextBox.TextProperty, file.Path.LocalPath);
         }
+
     }
 }
