@@ -265,7 +265,7 @@
                         <Run
                             FontSize="12"
                             Foreground="#606060"
-                            Text="0.0.2" />
+                            Text="0.0.3" />
                     </TextBlock>
                     <TextBlock Text="作者: Jelly" />
                     <HyperlinkButton Content="Github" NavigateUri="https://github.com/J31why/ED9FontCreator" />
