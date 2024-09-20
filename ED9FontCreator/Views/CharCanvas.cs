@@ -46,7 +46,7 @@ namespace ED9FontCreator.Views
             set => SetValue(IsShowCharBackgroundProperty, value);
         }
 
-        
+
         public bool IsPreview
         {
             get => this.GetValue(IsPreviewProperty);
@@ -124,7 +124,7 @@ namespace ED9FontCreator.Views
                 InvalidateMeasure();
                 return;
             }
-            var typeface = new Typeface(new FontFamily(Font.FontName+ ",Segoe UI Symbol"), Enum.Parse<FontStyle>(Font.FontStyle), Enum.Parse<FontWeight>(Font.FontWeight));
+            var typeface = new Typeface(new FontFamily(Font.FontName + ",Segoe UI Symbol"), Enum.Parse<FontStyle>(Font.FontStyle), Enum.Parse<FontWeight>(Font.FontWeight));
             short x = 0, y = 0, highest = 0;
 
             if (IsPreview)
@@ -202,7 +202,7 @@ namespace ED9FontCreator.Views
                     context.DrawRectangle(CharBackground, null, new(fntChar.X, fntChar.Y, fntChar.Width, fntChar.Height));
                 });
             }
-            
+
             for (var i = 0; i < _formattedTexts.Count; i++)
             {
                 var text = _formattedTexts[i];
@@ -211,8 +211,8 @@ namespace ED9FontCreator.Views
                 //context.DrawRectangle(Brushes.Bisque ,null, new(x, y, text.Width, text.Height));
                 var x = fntChar.X + Font.FontMarginL;
                 var y = fntChar.Y + Font.FontMarginT;
-          
-                context.DrawText(text, new Point(x,y));
+
+                context.DrawText(text, new Point(x, y));
             }
         }
     }

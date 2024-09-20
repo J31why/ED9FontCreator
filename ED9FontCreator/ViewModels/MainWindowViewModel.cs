@@ -1,13 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
-using ED9FontCreator.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace ED9FontCreator.ViewModels
 {
@@ -47,7 +45,7 @@ namespace ED9FontCreator.ViewModels
         private void PreviewText(string? text)
         {
             if (text == null) return;
-            InitReplaceGroup();
+            FntHelper.InitReplaceGroup(ReplaceText);
             var charArr = text.ToCharArray();
             var temp = new List<FntChar>();
             foreach (var c in charArr)
@@ -94,7 +92,7 @@ namespace ED9FontCreator.ViewModels
         {
             if (isRed)
             {
-                InitReplaceGroup();
+                FntHelper.InitReplaceGroup(ReplaceText);
                 TempFntData.Clear();
             }
             IsRedChars = isRed;
@@ -160,18 +158,6 @@ namespace ED9FontCreator.ViewModels
                 Arguments = OutDir,
                 UseShellExecute = true
             });
-        }
-
-        private void InitReplaceGroup()
-        {
-            FntHelper.ReplaceGroup.Clear();
-            var regex = new Regex(@"\[(.*?)\]\s*=\s*\[(.*?)\]");
-            var matches = regex.Matches(ReplaceText);
-            foreach (Match match in matches)
-            {
-                var group = new ReplaceItem(match.Groups[1].Value, match.Groups[2].Value);
-                FntHelper.ReplaceGroup.Add(group);
-            }
         }
     }
 }
