@@ -13,7 +13,7 @@
 根据自己的需求设定字体, 推荐使用字符齐全的字体, 比如思源系列的字体.  
 如果字体空白过大, 可以使用字体裁剪.  
 Fnt设定的XY offset是游戏使用的字体显示偏移, 推荐默认.  
-间距补充是两个字符之间的间隔, 推荐2.  
+间距补充是战斗信息框中两个字符之间的间隔, 推荐2.  
 调整设置后可先预览查看是否是自己需要的效果. 注意: 预览会沿用字符设定.  
 ### 字符设定
 简繁转换和特定字符的替换.
@@ -35,3 +35,4 @@ Fnt设定的XY offset是游戏使用的字体显示偏移, 推荐默认.
 ![2](Screenshots/2.png) 
 # 参考
 [黎之轨迹工具包（更新中：2022/8/24）](https://bbs.3dmgame.com/forum.php?mod=viewthread&tid=6321673&page=1&extra=#pid301960392)
+[ED9FontConverter](https://github.com/TwnKey/ED9FontConverter)
