@@ -229,8 +229,8 @@ namespace ED9FontCreator.ViewModels
             canvas.DrawBitmap(img2, new SKPoint(0, 0), paint);
 
             using var image = SKImage.FromBitmap(combinedImage);
-            using var data = image.Encode(SKEncodedImageFormat.Jpeg, 100);
-            using var stream = System.IO.File.OpenWrite(outputPath);
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+            using var stream = File.OpenWrite(outputPath);
             data.SaveTo(stream);
         }
 
