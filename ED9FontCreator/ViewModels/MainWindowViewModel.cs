@@ -2,12 +2,13 @@
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using ED9FontCreator.Views;
-using SkiaSharp;
+using NStandard;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace ED9FontCreator.ViewModels
 {
@@ -31,11 +32,12 @@ namespace ED9FontCreator.ViewModels
         {
             if (!FntHelper.GetFnt(FntPath, out var fnt))
             {
+                DrawChars = null;
+                this.Fnt = null;
                 ShowInfo("解析失败", InfoBarState.Error);
                 return;
             }
             this.Fnt = fnt;
-            TempFntData.Clear();
             DrawChars = null;
             ShowInfo("解析成功", InfoBarState.Success);
         }
@@ -44,7 +46,7 @@ namespace ED9FontCreator.ViewModels
         private void SearchFntChar(string? text)
         {
             if (text == null || Fnt == null) return;
-            var code = FntHelper.GetCode(text);
+            var code = text.CharAt(0);
             SearchedFntChar = Fnt.Chars.FirstOrDefault(x => x.Code == code);
         }
 
@@ -53,13 +55,14 @@ namespace ED9FontCreator.ViewModels
         {
             if (text == null) return;
             FntHelper.InitReplaceGroup(ReplaceText);
-            var charArr = text.ToCharArray();
             var temp = new List<FntChar>();
-            foreach (var c in charArr)
+            foreach (var c in text.ToCharArray())
             {
                 temp.Add(new FntChar
                 {
-                    Code = FntHelper.GetCode(c.ToString()),
+                    Char = c,
+                    ReplacedChar = FntHelper.Replace(c, IsSimplifiedChinese),
+                    ColorChannel = 0x200,
                     Type = 1,
                     XOffset = FntSettings.FntXOffset,
                     YOffset = FntSettings.FntYOffset
@@ -75,16 +78,45 @@ namespace ED9FontCreator.ViewModels
             FntSettings = new();
         }
 
-        [RelayCommand]
-        private void ExportCharPng()
+        [RelayCommand(CanExecute = nameof(Analysed))]
+        private void GenerateChars()
+        {
+            try
+            {
+                FntHelper.InitReplaceGroup(ReplaceText);
+                var temp = Fnt!.Chars.Select(c => new FntChar
+                {
+                    Char = c.Char,
+                    ReplacedChar = FntHelper.Replace(c.Char, IsSimplifiedChinese),
+                    ColorChannel = c.ColorChannel,
+                    Offset = c.Offset,
+                    Type = c.Char is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or ' ' or '(' or ')' or '.' ? 1 : 0,
+                    XOffset = FntSettings.FntXOffset,
+                    YOffset = FntSettings.FntYOffset
+                }).ToList();
+                DrawChars = temp;
+                ShowInfo("生成字符完成", InfoBarState.Success);
+                CanExportFont = true;
+            }
+            catch(Exception e)
+            {
+                ShowInfo(e.Message, InfoBarState.Error);
+                CanExportFont = false;
+                DrawChars = null;
+            }
+        }
+
+        [RelayCommand(CanExecute = nameof(CanExportFont))]
+        private void ExportFont()
         {
             try
             {
                 if (DrawChars == null || DrawChars.Count == 0)
-                {
-                    ShowInfo("先生成字符", InfoBarState.Alert);
-                    return;
-                }
+                    throw new Exception("先生成字符");
+                //fnt
+                if (!ExportFnt())
+                    throw new Exception("导出字体失败");
+                //png
                 var pSize = new PixelSize((int)DrawCanvas.Bounds.Width, (int)DrawCanvas.Bounds.Height);
                 var size = new Size(pSize.Width, pSize.Height);
                 using RenderTargetBitmap bitmap = new(pSize, new Vector(96, 96));
@@ -92,88 +124,17 @@ namespace ED9FontCreator.ViewModels
                 DrawCanvas.Arrange(new Rect(size));
                 DrawCanvas.UpdateLayout();
                 bitmap.Render(DrawCanvas);
-                var file = Path.Combine(OutDir, IsRedChars ? "r.png" : "g.png");
+                var file = Path.Combine(OutDir, Path.GetFileNameWithoutExtension(FntPath) + ".png");
                 bitmap.Save(file);
-                if (IsRedChars)
-                    TempFntData.Clear();
-                SaveTempFnt();
-                ShowInfo($"导出{(IsRedChars ? "红色" : "绿色")}字符图片成功", InfoBarState.Success);
+                //convert
+                if (!PNG2DDS(file))
+                    throw new Exception("转换字体失败");
+                File.Delete(file);
+                ShowInfo("导出字体完成.",InfoBarState.Success);
             }
-            catch
+            catch (Exception e)
             {
-                ShowInfo($"导出{(IsRedChars ? "红色" : "绿色")}字符图片失败", InfoBarState.Error);
-            }
-        }
-
-        [RelayCommand]
-        private void GenerateChars(bool isRed)
-        {
-            if (isRed)
-            {
-                FntHelper.InitReplaceGroup(ReplaceText);
-                TempFntData.Clear();
-            }
-            IsRedChars = isRed;
-            var chars = Fnt!.Chars.Where(x => x.ColorChannel == (isRed ? 0x200 : 0x100)).ToList();
-            chars = chars.OrderBy(x => x.Y).ThenBy(x => x.X).ToList(); //匹配原版排序
-            var temp = new List<FntChar>();
-            foreach (var c in chars)
-            {
-                var @char = (char)c.Code;
-                temp.Add(new()
-                {
-                    Code = c.Code,
-                    ColorChannel = c.ColorChannel,
-                    Offset = c.Offset,
-                    Type = @char is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or
-                        >= '0' and <= '9' or ' ' or '(' or ')' or '.' ? 1 : 0,
-                    XOffset = FntSettings.FntXOffset,
-                    YOffset = FntSettings.FntYOffset
-                });
-            }
-            DrawChars = temp;
-        }
-
-        private void SaveTempFnt()
-        {
-            if (DrawChars == null) return;
-            foreach (var fntChar in DrawChars)
-            {
-                TempFntData.Add(fntChar);
-            }
-            this.ExportTempFntCommand.NotifyCanExecuteChanged();
-        }
-
-        [RelayCommand(CanExecute = nameof(CanExportTempFnt))]
-        private void ExportTempFnt()
-        {
-            try
-            {
-                var temp = TempFntData.ToList();
-                temp.Sort((x, y) => x.Code.CompareTo(y.Code));
-                var file = Path.Combine(OutDir, Path.GetFileName(FntPath));
-                if (File.Exists(file))
-                    File.Delete(file);
-                using FileStream fs = new(file, FileMode.Create);
-                fs.Write(Fnt!.Head);
-                foreach (FntChar c in temp)
-                {
-                    fs.WriteInt(c.Code);
-                    fs.WriteInt(c.Type);
-                    fs.WriteShort(c.X);
-                    fs.WriteShort(c.Y);
-                    fs.WriteShort(c.Width);
-                    fs.WriteShort(c.Height);
-                    fs.WriteShort(c.ColorChannel);
-                    fs.WriteShort(c.XOffset);
-                    fs.WriteShort(c.YOffset);
-                    fs.WriteShort(c.NextCharOffset);
-                }
-                ShowInfo("导出Fnt成功", InfoBarState.Success);
-            }
-            catch
-            {
-                ShowInfo("导出Fnt失败", InfoBarState.Error);
+                ShowInfo(e.Message, InfoBarState.Error);
             }
         }
 
@@ -188,50 +149,58 @@ namespace ED9FontCreator.ViewModels
             });
         }
 
-        [RelayCommand]
-        private void BlendChars()
+        private bool PNG2DDS(string png)
+        {
+            if (!File.Exists(png)) return false;
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "texconv.exe", 
+                Arguments = $"-y -nologo -ft dds -w 0 -h 0 -if CUBIC -f BC7_UNORM -m 1 -o {OutDir} -r:keep {png}", 
+                RedirectStandardOutput = true, 
+                RedirectStandardError = true, 
+                UseShellExecute = false, 
+                CreateNoWindow = true
+            };
+            using var process = Process.Start(startInfo);
+            
+            var output = process?.StandardOutput.ReadToEnd();
+            var error = process?.StandardError.ReadToEnd();
+
+            process?.WaitForExit();
+            return error == "";
+        }
+        private bool ExportFnt()
         {
             try
             {
-                var r = Path.Combine(OutDir, "r.png");
-                var g = Path.Combine(OutDir, "g.png");
-                var file = Path.Combine(OutDir, Path.GetFileNameWithoutExtension(FntPath) + ".png");
-                if (!File.Exists(r) || !File.Exists(g))
+                if (DrawChars == null) throw new Exception();
+                var temp = DrawChars.ToList();
+                temp.Sort((x, y) => x.Code.CompareTo(y.Code));
+                var file = Path.Combine(OutDir, Path.GetFileName(FntPath));
+                if (File.Exists(file))
+                    File.Delete(file);
+                using FileStream fs = new(file, FileMode.Create);
+                fs.Write(Fnt!.Head);
+                foreach (var c in temp)
                 {
-                    ShowInfo("先生成红绿字符图片", InfoBarState.Alert);
-                    return;
+                    fs.WriteInt(c.Code);
+                    fs.WriteInt(c.Type);
+                    fs.WriteShort(c.X);
+                    fs.WriteShort(c.Y);
+                    fs.WriteShort(c.MaxWidth);
+                    fs.WriteShort(c.PixelHeight);
+                    fs.WriteShort(c.ColorChannel);
+                    fs.WriteShort(c.XOffset);
+                    fs.WriteShort(c.YOffset);
+                    fs.WriteShort(c.Width);
                 }
-                BlendImage(r, g, file);
-                ShowInfo("图片生成成功", InfoBarState.Success);
-                File.Delete(r);
-                File.Delete(g);
             }
             catch
             {
-                ShowInfo("图片生成失败", InfoBarState.Error);
+                return false;
             }
-        }
-
-        public void BlendImage(string imagePath1, string imagePath2, string outputPath)
-        {
-            using var img1 = SKBitmap.Decode(imagePath1);
-            using var img2 = SKBitmap.Decode(imagePath2);
-            var combinedWidth = Math.Max(img1.Width, img2.Width);
-            var combinedHeight = Math.Max(img1.Height, img2.Height);
-
-            using var combinedImage = new SKBitmap(combinedWidth, combinedHeight);
-            using var canvas = new SKCanvas(combinedImage);
-            canvas.DrawBitmap(img1, new SKPoint(0, 0));
-            var paint = new SKPaint
-            {
-                BlendMode = SKBlendMode.Screen // 滤色模式
-            };
-            canvas.DrawBitmap(img2, new SKPoint(0, 0), paint);
-
-            using var image = SKImage.FromBitmap(combinedImage);
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-            using var stream = File.OpenWrite(outputPath);
-            data.SaveTo(stream);
+            return true;
         }
 
         public void ShowInfo(string text, InfoBarState state = InfoBarState.None)

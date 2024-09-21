@@ -65,42 +65,28 @@ namespace ED9FontCreator
             return new FntChar
             {
                 Offset = fs.Position,
-                Code = fs.ReadInt(),
+                Char = (char)fs.ReadInt(),
                 Type = fs.ReadInt(),
                 X = (short)fs.ReadShort(),
                 Y = (short)fs.ReadShort(),
-                Width = (short)fs.ReadShort(),
-                Height = (short)fs.ReadShort(),
+                PixelWidth = (short)fs.ReadShort(),
+                PixelHeight = (short)fs.ReadShort(),
                 ColorChannel = (short)fs.ReadShort(),
                 XOffset = (short)fs.ReadShort(),
                 YOffset = (short)fs.ReadShort(),
-                NextCharOffset = (short)fs.ReadShort()
+                Width = (short)fs.ReadShort()
             };
         }
 
-        public static int GetCode(string unicode)
-        {
-            try
-            {
-                var bytes = Encoding.Unicode.GetBytes(unicode);
-                var code = (int)bytes[0];
-                for (var i = 1; i < 4 && i < bytes.Length; i++)
-                    code += bytes[i] << (i * 8);
-                return code;
-            }
-            catch
-            {
-                return -1;
-            }
-        }
 
-        public static string GetString(int code, bool simplify, bool replace = true)
+        public static char Replace(char @char, bool simplify, bool replace = true)
         {
-            var text = ((char)code).ToString();
+            var text = @char.ToString();
             var match = ReplaceGroup.FirstOrDefault(x => x.Old == text);
             if (match != null) text = match.New;
             if (simplify) text = ChineseConverter.ToSimplified(text);
-            return text ?? "";
+            var charArray= text?.ToCharArray();
+            return charArray?.First() ?? @char;
         }
 
         public static void InitReplaceGroup(string replace)

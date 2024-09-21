@@ -5,7 +5,6 @@ namespace ED9FontCreator.ViewModels
     public partial class FntSettings : ViewModelBase
     {
         [ObservableProperty] private short _fntXOffset = 0;
-        [ObservableProperty] private short _fntYOffset = 0xC;
-        [ObservableProperty] private short _fntNextCharExOffset = 2;
+        [ObservableProperty] private short _fntYOffset = 0;
     }
 }
