@@ -210,6 +210,8 @@ namespace ED9FontCreator.Views
                 var text = _formattedTexts[i];
                 var fntChar = Chars[i];
 
+                if (IsShowCharBackground)
+                    context.DrawRectangle(CharBackground, null, new(fntChar.X, fntChar.Y, fntChar.Width, fntChar.Height));
                 //context.DrawRectangle(Brushes.Bisque ,null, new(x, y, text.Width, text.Height));
                 var x = fntChar.X + Font.FontMarginL + text.OverhangLeading;
                 var y = fntChar.Y + Font.FontMarginT;
