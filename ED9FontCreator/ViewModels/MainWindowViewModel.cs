@@ -204,7 +204,7 @@ namespace ED9FontCreator.ViewModels
                 BlendImage(r, g, file);
                 ShowInfo("图片生成成功", InfoBarState.Success);
                 File.Delete(r);
-                File.Delete(r);
+                File.Delete(g);
             }
             catch
             {
