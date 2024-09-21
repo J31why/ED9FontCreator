@@ -25,8 +25,7 @@ Fnt设定的XY offset是游戏使用的字体显示偏移, 推荐默认.
 2. 生成绿色字符, 与上方同样的操作.  
 3. 合成字符图片
 3. 此时缓存的字符数量应该和Fnt解析出来的总字符数一致, 点击导出缓存Fnt.  
-4. 打开输出目录, 应该有2个文件在里面, **font_\*.fnt和font_\*.png**,
-![ps](Screenshots/ps.png) 
+4. 打开输出目录, 应该有2个文件在里面, **font_\*.fnt和font_\*.png**.  
 5. 打开**TexconvGui**, Source选择本程序的输出目录, Destination选择导出目录, Output Format选择**BC7_UNORM**, 点击Convert, 等待其转换结束.  
 ![TexConvGui](Screenshots/TexConvGui.png) 
 6. 注意备份!! 此时我们把**ED9FontCreator**输出目录中的**font_\*.fnt**覆盖到**game\\asset\common\font**目录,  
