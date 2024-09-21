@@ -36,5 +36,8 @@ namespace ED9FontCreator.ViewModels
         public bool CanExportTempFnt => Fnt?.TotalChars == TempFntData.Count;
 
         public CharCanvas DrawCanvas;
+        //info
+        [ObservableProperty] private string _infoText;
+        [ObservableProperty] private InfoBarState _infoState;
     }
 }
