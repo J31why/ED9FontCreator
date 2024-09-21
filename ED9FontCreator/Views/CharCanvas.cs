@@ -197,14 +197,6 @@ namespace ED9FontCreator.Views
                 context.DrawRectangle(Background, null, new Rect(Bounds.Size));
             if (Chars == null) return;
 
-            if (IsShowCharBackground)
-            {
-                Chars.ForEach(fntChar =>
-                {
-                    context.DrawRectangle(CharBackground, null, new(fntChar.X, fntChar.Y, fntChar.Width, fntChar.Height));
-                });
-            }
-
             for (var i = 0; i < _formattedTexts.Count; i++)
             {
                 var text = _formattedTexts[i];
