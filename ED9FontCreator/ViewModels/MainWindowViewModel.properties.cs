@@ -21,8 +21,6 @@ namespace ED9FontCreator.ViewModels
         [ObservableProperty] private FontSettings _fontSettings = new();
         public string[] FontWeights => Enum.GetNames(typeof(FontWeight));
         public string[] FontStyles => Enum.GetNames(typeof(FontStyle));
-        //FNT settings
-        [ObservableProperty] private FntSettings _fntSettings = new();
 
         //char settings
         [ObservableProperty] private bool _isSimplifiedChinese = true;

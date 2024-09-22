@@ -1,11 +1,9 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Threading;
+using System.Threading;
 
 namespace ED9FontCreator.Views;
 
@@ -22,7 +20,7 @@ public class InfoBar : TemplatedControl
     private Timer? _timer;
 
     public static readonly StyledProperty<string> TextProperty =
-        AvaloniaProperty.Register<InfoBar, string>(nameof(Text),defaultBindingMode:BindingMode.TwoWay);
+        AvaloniaProperty.Register<InfoBar, string>(nameof(Text), defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly StyledProperty<InfoBarState> StateProperty =
         AvaloniaProperty.Register<InfoBar, InfoBarState>(nameof(State), defaultBindingMode: BindingMode.TwoWay);

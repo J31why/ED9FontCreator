@@ -1,19 +1,13 @@
-﻿using Avalonia.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Media;
+﻿using Avalonia;
+using Avalonia.Controls;
 using ED9FontCreator.ViewModels;
+using System.Collections.Generic;
 
 namespace ED9FontCreator.Views
 {
     public partial class CharsCanvas : Control
     {
-        public static readonly StyledProperty<FntSettings> FntProperty =
-            AvaloniaProperty.Register<CharsCanvas, FntSettings>(nameof(Fnt));
+
 
         public static readonly StyledProperty<FontSettings> FontProperty =
             AvaloniaProperty.Register<CharsCanvas, FontSettings>(nameof(Font));
@@ -51,10 +45,6 @@ namespace ED9FontCreator.Views
             set => SetValue(FontProperty, value);
         }
 
-        public FntSettings Fnt
-        {
-            get => this.GetValue(FntProperty);
-            set => SetValue(FntProperty, value);
-        }
+
     }
 }

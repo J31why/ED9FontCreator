@@ -1,13 +1,15 @@
-﻿using Chinese;
-using ED9FontCreator.Models;
+﻿using ED9FontCreator.Models;
 using ED9FontCreator.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.International.Converters.TraditionalChineseToSimplifiedConverter;
 
 namespace ED9FontCreator
 {
@@ -78,14 +80,15 @@ namespace ED9FontCreator
             };
         }
 
-
         public static char Replace(char @char, bool simplify, bool replace = true)
         {
             var text = @char.ToString();
             var match = ReplaceGroup.FirstOrDefault(x => x.Old == text);
-            if (match != null) text = match.New;
-            if (simplify) text = ChineseConverter.ToSimplified(text);
-            var charArray= text?.ToCharArray();
+            if (match != null) 
+                text = match.New;
+            if (simplify && text != null)
+                text = ChineseConverter.Convert(text, ChineseConversionDirection.TraditionalToSimplified);
+            var charArray = text?.ToCharArray();
             return charArray?.First() ?? @char;
         }
 

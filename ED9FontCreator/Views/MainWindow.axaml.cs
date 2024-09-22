@@ -1,10 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
-using Avalonia.Media.TextFormatting;
 using ED9FontCreator.ViewModels;
-using System.Globalization;
 using System.Linq;
 
 namespace ED9FontCreator.Views

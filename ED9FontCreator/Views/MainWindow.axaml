@@ -109,32 +109,6 @@
                                 ItemsSource="{Binding FontStyles}"
                                 SelectedValue="{Binding FontSettings.FontStyle}" />
                         </DockPanel>
-                        <TextBlock
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Text="FNT设定" />
-                        <DockPanel>
-                            <TextBlock
-                                Margin="5"
-                                VerticalAlignment="Center"
-                                Foreground="#707070"
-                                Text="X Offset:" />
-                            <NumericUpDown
-                                FormatString="0"
-                                ShowButtonSpinner="False"
-                                Value="{Binding FntSettings.FntXOffset}" />
-                        </DockPanel>
-                        <DockPanel>
-                            <TextBlock
-                                Margin="5"
-                                VerticalAlignment="Center"
-                                Foreground="#707070"
-                                Text="Y Offset:" />
-                            <NumericUpDown
-                                FormatString="0"
-                                ShowButtonSpinner="False"
-                                Value="{Binding FntSettings.FntYOffset}" />
-                        </DockPanel>
                         <Button
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
@@ -151,7 +125,7 @@
                             IsChecked="True" />
                         <TextBox
                             Name="previewTextBox"
-                            Text="预 览:ijfp(（）"
+                            Text="预 览:ijfp（）"
                             Watermark="预览文本">
                             <TextBox.InnerRightContent>
                                 <Button
@@ -166,7 +140,6 @@
                                 <views:CharsCanvas
                                     Height="100"
                                     Chars="{Binding PreviewChars}"
-                                    Fnt="{Binding FntSettings}"
                                     Font="{Binding FontSettings}"
                                     IsPreview="False"
                                     IsShowCharBackground="{Binding #isShowCharBackgroundBox.IsChecked}" />
@@ -174,7 +147,6 @@
                                     Height="100"
                                     Margin="0,1,0,0"
                                     Chars="{Binding PreviewChars}"
-                                    Fnt="{Binding FntSettings}"
                                     Font="{Binding FontSettings}"
                                     IsPreview="True"
                                     IsShowCharBackground="{Binding #isShowCharBackgroundBox.IsChecked}" />
@@ -245,7 +217,6 @@
                     Width="4096"
                     Height="4096"
                     Chars="{Binding DrawChars}"
-                    Fnt="{Binding FntSettings}"
                     Font="{Binding FontSettings}" />
             </ScrollViewer>
         </DockPanel>

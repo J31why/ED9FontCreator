@@ -2,13 +2,11 @@
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using ED9FontCreator.Views;
-using NStandard;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
 namespace ED9FontCreator.ViewModels
 {
@@ -30,23 +28,31 @@ namespace ED9FontCreator.ViewModels
         [RelayCommand]
         private void AnalyzeFntFile()
         {
-            if (!FntHelper.GetFnt(FntPath, out var fnt))
+            try
             {
+                if (!FntHelper.GetFnt(FntPath, out var fnt))
+                {
+                    DrawChars = null;
+                    this.Fnt = null;
+                    ShowInfo("解析失败", InfoBarState.Error);
+                    return;
+                }
+                this.Fnt = fnt;
                 DrawChars = null;
-                this.Fnt = null;
-                ShowInfo("解析失败", InfoBarState.Error);
-                return;
+                ShowInfo("解析成功", InfoBarState.Success);
             }
-            this.Fnt = fnt;
-            DrawChars = null;
-            ShowInfo("解析成功", InfoBarState.Success);
+            finally
+            {
+                CanExportFont = false;
+            }
+   
         }
 
         [RelayCommand]
         private void SearchFntChar(string? text)
         {
             if (text == null || Fnt == null) return;
-            var code = text.CharAt(0);
+            var code = text[0];
             SearchedFntChar = Fnt.Chars.FirstOrDefault(x => x.Code == code);
         }
 
@@ -63,9 +69,7 @@ namespace ED9FontCreator.ViewModels
                     Char = c,
                     ReplacedChar = FntHelper.Replace(c, IsSimplifiedChinese),
                     ColorChannel = 0x200,
-                    Type = 1,
-                    XOffset = FntSettings.FntXOffset,
-                    YOffset = FntSettings.FntYOffset
+                    Type = 1
                 });
             }
             PreviewChars = temp;
@@ -75,7 +79,6 @@ namespace ED9FontCreator.ViewModels
         private void DefaultUserSetting()
         {
             FontSettings = new();
-            FntSettings = new();
         }
 
         [RelayCommand(CanExecute = nameof(Analysed))]
@@ -91,14 +94,12 @@ namespace ED9FontCreator.ViewModels
                     ColorChannel = c.ColorChannel,
                     Offset = c.Offset,
                     Type = c.Char is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or ' ' or '(' or ')' or '.' ? 1 : 0,
-                    XOffset = FntSettings.FntXOffset,
-                    YOffset = FntSettings.FntYOffset
                 }).ToList();
                 DrawChars = temp;
                 ShowInfo("生成字符完成", InfoBarState.Success);
                 CanExportFont = true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ShowInfo(e.Message, InfoBarState.Error);
                 CanExportFont = false;
@@ -130,7 +131,7 @@ namespace ED9FontCreator.ViewModels
                 if (!PNG2DDS(file))
                     throw new Exception("转换字体失败");
                 File.Delete(file);
-                ShowInfo("导出字体完成.",InfoBarState.Success);
+                ShowInfo("导出字体完成.", InfoBarState.Success);
             }
             catch (Exception e)
             {
@@ -155,15 +156,15 @@ namespace ED9FontCreator.ViewModels
 
             var startInfo = new ProcessStartInfo
             {
-                FileName = "texconv.exe", 
-                Arguments = $"-y -nologo -ft dds -w 0 -h 0 -if CUBIC -f BC7_UNORM -m 1 -o {OutDir} -r:keep {png}", 
-                RedirectStandardOutput = true, 
-                RedirectStandardError = true, 
-                UseShellExecute = false, 
+                FileName = "texconv.exe",
+                Arguments = $"-y -nologo -ft dds -w 0 -h 0 -if CUBIC -f BC7_UNORM -m 1 -o {OutDir} -r:keep {png}",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
                 CreateNoWindow = true
             };
             using var process = Process.Start(startInfo);
-            
+
             var output = process?.StandardOutput.ReadToEnd();
             var error = process?.StandardError.ReadToEnd();
 
