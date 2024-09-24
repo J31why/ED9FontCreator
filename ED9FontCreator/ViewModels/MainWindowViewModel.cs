@@ -126,11 +126,13 @@ namespace ED9FontCreator.ViewModels
                 DrawCanvas.UpdateLayout();
                 bitmap.Render(DrawCanvas);
                 var file = Path.Combine(OutDir, Path.GetFileNameWithoutExtension(FntPath) + ".png");
-                bitmap.Save(file);
+                bitmap.Save(file,100);
                 //convert
                 if (!PNG2DDS(file))
                     throw new Exception("转换字体失败");
+#if RELEASE
                 File.Delete(file);
+#endif
                 ShowInfo("导出字体完成.", InfoBarState.Success);
             }
             catch (Exception e)
