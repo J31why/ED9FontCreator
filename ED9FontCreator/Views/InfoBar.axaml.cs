@@ -52,11 +52,7 @@ public class InfoBar : TemplatedControl
 
     private void TextPropertyChanged()
     {
-        if (Text == "")
-        {
-            IsVisible = false;
-            return;
-        }
+        if (Text == "") return;
         IsVisible = true;
         _timer?.Dispose();
         _timer = new Timer(CloseTask, null, 5000, Timeout.Infinite);
@@ -64,6 +60,7 @@ public class InfoBar : TemplatedControl
 
     private void Close()
     {
+        IsVisible = false;
         SetValue(TextProperty, "");
     }
     private void CloseTask(object? state)

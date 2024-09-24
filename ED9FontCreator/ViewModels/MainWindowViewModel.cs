@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace ED9FontCreator.ViewModels
 {
@@ -16,7 +18,6 @@ namespace ED9FontCreator.ViewModels
         {
 #if DEBUG
             _fntPath = @"E:\Games\ED9A\asset\common\font\font_0.fnt";
-            _fontSettings.FontName = "Source Han Serif CN";
 #endif
             OutDir = Path.Combine(Environment.CurrentDirectory, "out");
             if (!Directory.Exists(OutDir))
@@ -108,7 +109,7 @@ namespace ED9FontCreator.ViewModels
         }
 
         [RelayCommand(CanExecute = nameof(CanExportFont))]
-        private void ExportFont()
+        private async void ExportFont()
         {
             try
             {
@@ -128,7 +129,7 @@ namespace ED9FontCreator.ViewModels
                 var file = Path.Combine(OutDir, Path.GetFileNameWithoutExtension(FntPath) + ".png");
                 bitmap.Save(file,100);
                 //convert
-                if (!PNG2DDS(file))
+                if (!(await PNG2DDS(file)))
                     throw new Exception("转换字体失败");
 #if RELEASE
                 File.Delete(file);
@@ -152,7 +153,7 @@ namespace ED9FontCreator.ViewModels
             });
         }
 
-        private bool PNG2DDS(string png)
+        private async Task<bool> PNG2DDS(string png)
         {
             if (!File.Exists(png)) return false;
 
@@ -166,11 +167,11 @@ namespace ED9FontCreator.ViewModels
                 CreateNoWindow = true
             };
             using var process = Process.Start(startInfo);
+            if (process == null) return false;
+            var output = await process.StandardOutput.ReadToEndAsync();
+            var error = await process.StandardError.ReadToEndAsync();
 
-            var output = process?.StandardOutput.ReadToEnd();
-            var error = process?.StandardError.ReadToEnd();
-
-            process?.WaitForExit();
+            await process.WaitForExitAsync();
             return error == "";
         }
         private bool ExportFnt()
