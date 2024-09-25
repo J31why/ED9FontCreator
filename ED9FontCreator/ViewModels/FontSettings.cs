@@ -6,7 +6,7 @@ namespace ED9FontCreator.ViewModels
     {
         [ObservableProperty] private string _fontName = "Source Han Sans SC VF";
         [ObservableProperty] private short _fontSize = 42;
-        [ObservableProperty] private string _fontWeight = nameof(Avalonia.Media.FontWeight.Bold);
+        [ObservableProperty] private string _fontWeight = nameof(Avalonia.Media.FontWeight.Medium);
         [ObservableProperty] private string _fontStyle = nameof(Avalonia.Media.FontStyle.Normal);
 
     }
