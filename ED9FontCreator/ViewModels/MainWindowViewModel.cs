@@ -94,7 +94,7 @@ namespace ED9FontCreator.ViewModels
                     ReplacedChar = FntHelper.Replace(c.Char, IsSimplifiedChinese),
                     ColorChannel = c.ColorChannel,
                     Offset = c.Offset,
-                    Type = c.Char is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or ' ' or '(' or ')' or '.' ? 1 : 0,
+                    Type = c.Type//c.Char is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or ' ' or '(' or ')' or '.' ? 1 : 0,
                 }).ToList();
                 DrawChars = temp;
                 ShowInfo("生成字符完成", InfoBarState.Success);

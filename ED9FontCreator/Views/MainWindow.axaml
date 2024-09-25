@@ -61,6 +61,7 @@
                             </TextBox.InnerRightContent>
                         </TextBox>
                         <TextBlock Text="{Binding SearchedFntChar.Code, StringFormat=Code:{0:X}}" />
+                        <TextBlock Text="{Binding SearchedFntChar.Type, StringFormat=Type:{0:X}}" />
                         <TextBlock Text="{Binding SearchedFntChar.ColorChannel, StringFormat=ColorChannel:{0:X}}" />
                         <TextBlock Text="{Binding SearchedFntChar.X, StringFormat=X:{0}}" />
                         <TextBlock Text="{Binding SearchedFntChar.Y, StringFormat=Y:{0}}" />
